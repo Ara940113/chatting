@@ -11,16 +11,30 @@ public class MyClientSocket {
 
     Socket socket;
     BufferedWriter writer;
+    BufferedReader reader;
 
     public MyClientSocket() {
         try {
             socket = new Socket("localhost", 1078);
             writer = new BufferedWriter(
                     new OutputStreamWriter(socket.getOutputStream()));
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             // 스캐너 달고 반복 (x)
             Scanner sc = new Scanner(System.in);
             // 키보드로 입력받는 부분
+
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        String inputData = reader.readLine();
+                        System.out.println("받은메세지: " + inputData);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
             while (true) {
                 String inputData = sc.nextLine();
                 writer.write(inputData + "\n"); // \n은 메세지의 끝을 알려주는것

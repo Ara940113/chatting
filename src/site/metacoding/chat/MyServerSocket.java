@@ -29,9 +29,23 @@ public class MyServerSocket {
                     new InputStreamReader(socket.getInputStream()));
 
             // 메시지 보내기
-            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             sc = new Scanner(System.in);
-            // 메시지 반복해서 받는 서버 소켓
+            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        String inputData = sc.nextLine();
+                        writer.write(inputData + "\n");
+                        writer.flush();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }).start();
+
+            // 메시지 반복해서 받는 서버 소켓 - 메인 스레드
             while (true) {
                 String inputData = reader.readLine();
                 System.out.println("받은메세지: " + inputData);
