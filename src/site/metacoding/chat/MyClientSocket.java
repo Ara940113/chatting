@@ -15,14 +15,10 @@ public class MyClientSocket {
 
     public MyClientSocket() {
         try {
-            socket = new Socket("localhost", 1078);
+            socket = new Socket("localhost", 2000);
             writer = new BufferedWriter(
                     new OutputStreamWriter(socket.getOutputStream()));
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-            // 스캐너 달고 반복 (x)
-            Scanner sc = new Scanner(System.in);
-            // 키보드로 입력받는 부분
 
             new Thread(() -> {
                 while (true) {
@@ -34,7 +30,9 @@ public class MyClientSocket {
                     }
                 }
             }).start();
-
+            // 스캐너 달고 반복 (x)
+            Scanner sc = new Scanner(System.in);
+            // 키보드로 입력받는 부분
             while (true) {
                 String inputData = sc.nextLine();
                 writer.write(inputData + "\n"); // \n은 메세지의 끝을 알려주는것
@@ -49,5 +47,6 @@ public class MyClientSocket {
 
     public static void main(String[] args) {
         new MyClientSocket();
+        System.out.println("메인 종료");
     }
 }

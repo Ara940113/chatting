@@ -32,10 +32,11 @@ public class MyServerSocket {
             sc = new Scanner(System.in);
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
+            // 1. 이부분 추가 (서버소켓쪽)
             new Thread(() -> {
                 while (true) {
                     try {
-                        String inputData = sc.nextLine();
+                        String inputData = sc.nextLine(); // 키보드
                         writer.write(inputData + "\n");
                         writer.flush();
                     } catch (Exception e) {
