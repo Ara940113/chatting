@@ -1,4 +1,4 @@
-package site.metacoding.chat_v2;
+package site.metacoding.chat_v3;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,32 +9,40 @@ import java.util.Scanner;
 
 public class MyClientSocket {
 
+    String username;
+
     Socket socket;
 
-    // 스레드 (키보드로 받아서 바로 쓸 스레드)
-    BufferedWriter writer;
+    // 스레드
     Scanner sc;
+    BufferedWriter writer;
 
-    // 스레드 (읽는 스레드)
+    // 스레드
     BufferedReader reader;
 
     public MyClientSocket() {
         try {
-            socket = new Socket("192.168.0.132", 2000); // 1번 소켓 연결 127.0.0.1 : 루프백 주소 자기주소
+            socket = new Socket("192.168.0.132", 2000);
 
-            // 2번 버퍼연결
             sc = new Scanner(System.in);
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            // 새로운 스레드는 (읽기전용) - 메인스레드보다 나중에 나오면 메인은 와일을 돌거기 때문에 안온다.
+            // 새로운 스레드 (읽기 전용)
             new Thread(new 읽기전담스레드()).start();
 
-            // 메인스레드 (쓰기전용)
+            // 최초 username 전송 프로토콜
+            System.out.println("아이디를 입력하세요.");
+            username = sc.nextLine();
+            writer.write(username + "\n"); // 버퍼에 담기
+            writer.flush(); // 버퍼에 담긴 것을 stream으로 흘려보내기
+            System.out.println(username + "이 서버로 전송되었습니다.");
+
+            // 메인 스레드 (쓰기 전용)
             while (true) {
                 String keyboardInputData = sc.nextLine();
                 writer.write(keyboardInputData + "\n"); // 버퍼에 담기
-                writer.flush(); // 버퍼에 담긴 것을 stream으로 흘려보내기 - 통신의 시작
+                writer.flush(); // 버퍼에 담긴 것을 stream으로 흘려보내기
             }
 
         } catch (Exception e) {
@@ -42,7 +50,6 @@ public class MyClientSocket {
         }
     }
 
-    // 내부클래스로 만드면 좋은점 : 전역변수를 다 쓸 수 있다.
     class 읽기전담스레드 implements Runnable {
 
         @Override
