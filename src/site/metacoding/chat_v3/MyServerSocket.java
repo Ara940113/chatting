@@ -69,7 +69,7 @@ public class MyServerSocket {
             try {
                 for (고객전담스레드 t : 고객리스트) { // 왼쪽 : 컬렉션 타입, 오른쪽 : 컬렉션
                     if (t != this) {
-                        t.writer.write(msg + "\n");
+                        t.writer.write(username + " : " + msg + "\n");
                         t.writer.flush();
                     }
                 }
@@ -79,11 +79,11 @@ public class MyServerSocket {
         }
 
         // CHAT:최주호:안녕
-        public void chatPrivate(String username, String msg) {
+        public void chatPrivate(String receiver, String msg) {
             try {
                 for (고객전담스레드 t : 고객리스트) { // 왼쪽 : 컬렉션 타입, 오른쪽 : 컬렉션
-                    if (t.username.equals(username)) {
-                        t.writer.write(msg + "\n");
+                    if (t.username.equals(receiver)) {
+                        t.writer.write("[귓속말] " + username + ": " + msg + "\n");
                         t.writer.flush();
                     }
                 }
@@ -104,9 +104,9 @@ public class MyServerSocket {
                 String msg = token[1];
                 chatPublic(msg);
             } else if (protocol.equals("CHAT")) {
-                String username = token[1];
+                String receiver = token[1];
                 String msg = token[2];
-                chatPrivate(username, msg);
+                chatPrivate(receiver, msg);
             } else { // 프로토콜 통과 못함.
                 System.out.println("프로토콜 없음");
             }
